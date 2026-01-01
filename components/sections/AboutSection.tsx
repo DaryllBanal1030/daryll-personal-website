@@ -1,3 +1,24 @@
+import Section from "@/components/section";
+
+const focus = [
+  {
+    title: "Real estate research → data",
+    desc: "Turning market research into data pipelines, dashboards, and decision-ready insights.",
+  },
+  {
+    title: "Lakehouse mindset",
+    desc: "Building projects around modern analytics patterns: ingestion → transformation → modeling → reporting.",
+  },
+  {
+    title: "Practical stack",
+    desc: "Python, SQL, Git, and cloud fundamentals — shipping small projects consistently.",
+  },
+  {
+    title: "Career target",
+    desc: "Data Analyst / Data Engineer track, leaning into cloud & engineering foundations.",
+  },
+];
+
 export default function AboutSection() {
   return (
     <section
