@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const NAV_ITEMS = [
   { id: "about", label: "About" },
@@ -13,10 +13,17 @@ const NAV_ITEMS = [
   { id: "contact", label: "Contact" },
 ] as const;
 
+type NavId = (typeof NAV_ITEMS)[number]["id"];
+
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [activeId, setActiveId] = useState<string>("");
+
+  // Default to "about" so one item is highlighted after first scroll/observe.
+  const [activeId, setActiveId] = useState<NavId>("about");
+
+  // Keep intersection ratios for ALL sections (more reliable than sorting "entries" only)
+  const ratiosRef = useRef<Map<string, number>>(new Map());
 
   useEffect(() => setMounted(true), []);
 
@@ -24,50 +31,65 @@ export default function Navbar() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Scrollspy via IntersectionObserver
-  useEffect(() => {
-    const sections = NAV_ITEMS
-      .map((item) => document.getElementById(item.id))
-      .filter(Boolean) as HTMLElement[];
+  // Scrollspy (reliable)
+  // Scrollspy (top proximity based - works both down and up)
+// Scrollspy (deterministic: based on section top positions)
+useEffect(() => {
+  const sectionEls = NAV_ITEMS
+    .map((item) => document.getElementById(item.id))
+    .filter(Boolean) as HTMLElement[];
 
-    if (sections.length === 0) return;
+  if (sectionEls.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Take the entries that are intersecting
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          // Prefer the one with the highest intersection ratio
-          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0))[0];
+  // Distance from top where we consider a section "active"
+  // Adjust if needed. Should be >= navbar height.
+  const OFFSET = 110;
 
-        if (visible?.target?.id) {
-          setActiveId(visible.target.id);
-        }
-      },
-      {
-        // Adjust for sticky navbar height (roughly)
-        root: null,
-        threshold: [0.2, 0.35, 0.5, 0.65],
-        rootMargin: "-30% 0px -60% 0px",
-      }
-    );
+  let ticking = false;
 
-    sections.forEach((s) => observer.observe(s));
+  const updateActive = () => {
+    ticking = false;
 
-    return () => observer.disconnect();
-  }, []);
+    // Find the last section whose top is <= OFFSET
+    let current: NavId = NAV_ITEMS[0].id;
 
-  const linkClass = (id: string) => {
-    const isActive = activeId === id;
+    for (const item of NAV_ITEMS) {
+      const el = document.getElementById(item.id);
+      if (!el) continue;
 
-    return [
-      "rounded-md px-2 py-1 text-dark2 transition dark:text-light1",
-      "hover:bg-light2 dark:hover:bg-dark2",
-      isActive
-        ? "bg-light2 font-semibold text-accent5 dark:bg-dark2 dark:text-accent1"
-        : "",
-    ].join(" ");
+      const top = el.getBoundingClientRect().top;
+      if (top <= OFFSET) current = item.id;
+    }
+
+    setActiveId((prev) => (prev === current ? prev : current));
   };
+
+  const onScroll = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(updateActive);
+    }
+  };
+
+  // Run once on mount (for refresh / direct load)
+  updateActive();
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+
+  return () => {
+    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("resize", onScroll);
+  };
+}, []);
+
+
+  const baseBtn =
+    "rounded-md px-2.5 py-1.5 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent5/40 dark:focus-visible:ring-accent1/40";
+  const inactiveBtn =
+    "text-dark2 hover:bg-light2 dark:text-light1 dark:hover:bg-dark2";
+  const activeBtn =
+    "bg-accent5/15 text-accent5 shadow-sm dark:bg-accent1/15 dark:text-accent1";
 
   return (
     <header className="sticky top-0 z-20 border-b border-light2 bg-light1/80 backdrop-blur-md dark:border-dark2 dark:bg-dark1/80">
@@ -80,10 +102,11 @@ export default function Navbar() {
               alt="Daryll logo"
               fill
               className="object-contain p-1.5"
+              priority
             />
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col leading-tight">
             <span className="text-sm font-bold text-dark2 dark:text-light1">
               Daryll Banal
             </span>
@@ -95,20 +118,28 @@ export default function Navbar() {
 
         {/* RIGHT: Links + Toggle */}
         <div className="flex items-center gap-3">
-          <div className="hidden items-center gap-2 text-sm md:flex">
-            {NAV_ITEMS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => scrollToId(item.id)}
-                className={linkClass(item.id)}
-                aria-current={activeId === item.id ? "page" : undefined}
-              >
-                {item.label}
-              </button>
-            ))}
+          {/* Desktop nav */}
+          <div className="hidden items-center gap-1 md:flex">
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeId === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => scrollToId(item.id)}
+                  className={[
+                    baseBtn,
+                    isActive ? activeBtn : inactiveBtn,
+                  ].join(" ")}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
           </div>
 
+          {/* Theme toggle */}
           {mounted && (
             <button
               type="button"
