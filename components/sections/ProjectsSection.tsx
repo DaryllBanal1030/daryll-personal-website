@@ -2,7 +2,7 @@ export default function ProjectsSection() {
   return (
     <section
   id="projects"
-  className="relative rounded-xl border border-light2 bg-light1 px-6 py-10 shadow-sm dark:border-dark2 dark:bg-dark1 md:px-10 md:py-12"
+  className="relative rounded-xl border border-light2 bg-light1 px-6 py-10 shadow-sm dark:border-dark2 dark:bg-dark1 md:px-10 md:py-12 scroll-mt-24"
 >
   {/* Soft accent glow */}
   <div className="pointer-events-none absolute -top-6 right-10 h-20 w-20 rounded-full bg-accent2/14 blur-2xl dark:bg-accent5/18" />
