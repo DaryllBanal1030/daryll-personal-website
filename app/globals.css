@@ -36,6 +36,32 @@
 .tag-chip {
   @apply rounded-full px-3 py-1 font-medium whitespace-nowrap text-[11px];
 }
+/* Add these to globals.css */
+
+@keyframes heroOrbit {
+  0% { transform: translate(0, 0); opacity: 0.55; }
+  50% { transform: translate(18px, 10px); opacity: 0.85; }
+  100% { transform: translate(0, 0); opacity: 0.55; }
+}
+
+.hero-orbit {
+  animation: heroOrbit 6s ease-in-out infinite;
+}
+
+@keyframes starPop {
+  0%   { transform: translate(-50%, -50%) scale(0.3); filter: blur(0px); }
+  35%  { transform: translate(-50%, -70%) scale(1); }
+  100% { transform: translate(-50%, -110%) scale(0.2); opacity: 0; filter: blur(1px); }
+}
+
+.hero-star {
+  position: absolute;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(255,255,255,0.0) 60%),
+    radial-gradient(circle at 60% 60%, rgba(255, 215, 0, 0.7), rgba(255,255,255,0.0) 55%);
+  animation: starPop 820ms ease-out forwards;
+}
 
  /*--color-dark1: #2B2B2B;
   --color-light1: #F7F7F7;
