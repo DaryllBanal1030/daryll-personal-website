@@ -2,8 +2,10 @@ export default function ContactSection() {
   return (
     <section
   id="contact"
-  className="relative rounded-xl border border-light2 bg-light1 px-6 py-10 shadow-sm dark:border-dark2 dark:bg-dark1 md:px-10 md:py-12  scroll-mt-24"
->
+  className="group relative overflow-hidden rounded-2xl border border-light2 bg-light1 px-6 py-10 shadow-sm
+             transition hover:-translate-y-1 hover:border-accent2/60 hover:shadow-md
+             dark:border-dark2 dark:bg-dark1 dark:hover:border-accent2/70
+             md:px-10 md:py-14">
   {/* Soft accent glow */}
   <div className="pointer-events-none absolute -top-6 left-10 h-20 w-20 rounded-full bg-accent5/12 blur-2xl dark:bg-accent1/16" />
 
@@ -55,7 +57,8 @@ export default function ContactSection() {
     {/* RIGHT — Contact details cards */}
     <aside className="space-y-4 md:space-y-5">
       {/* Email card */}
-      <div className="rounded-xl border border-light2 bg-light1/95 p-4 text-sm shadow-sm dark:border-dark2 dark:bg-dark1/90 md:p-5">
+      <div className="hover:-translate-y-1 hover:border-accent2/60 hover:shadow-md
+             dark:border-dark2 dark:bg-dark1 rounded-xl border border-light2 bg-light1/95 p-4 text-sm shadow-sm dark:border-dark2 dark:bg-dark1/90 md:p-5">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dark1/70 dark:text-light1/70">
           Email
         </p>
@@ -71,7 +74,8 @@ export default function ContactSection() {
       </div>
 
       {/* LinkedIn card */}
-      <div className="rounded-xl border border-light2 bg-light1/95 p-4 text-sm shadow-sm dark:border-dark2 dark:bg-dark1/90 md:p-5">
+      <div className="hover:-translate-y-1 hover:border-accent2/60 hover:shadow-md
+             dark:border-dark2 dark:bg-dark1 rounded-xl border border-light2 bg-light1/95 p-4 text-sm shadow-sm dark:border-dark2 dark:bg-dark1/90 md:p-5">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dark1/70 dark:text-light1/70">
           LinkedIn
         </p>
@@ -89,7 +93,8 @@ export default function ContactSection() {
       </div>
 
       {/* GitHub / portfolio card (optional) */}
-      <div className="rounded-xl border border-light2 bg-light1/95 p-4 text-sm shadow-sm dark:border-dark2 dark:bg-dark1/90 md:p-5">
+      <div className="hover:-translate-y-1 hover:border-accent2/60 hover:shadow-md
+             dark:border-dark2 dark:bg-dark1 rounded-xl border border-light2 bg-light1/95 p-4 text-sm shadow-sm dark:border-dark2 dark:bg-dark1/90 md:p-5">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dark1/70 dark:text-light1/70">
           GitHub / Portfolio
         </p>

@@ -2,8 +2,10 @@ export default function SkillsSection() {
   return (
     <section
   id="skills"
-  className="relative rounded-xl border border-light2 bg-light1 px-6 py-10 shadow-sm dark:border-dark2 dark:bg-dark1 md:px-10 md:py-12 scroll-mt-24"
->
+  className="group relative overflow-hidden rounded-2xl border border-light2 bg-light1 px-6 py-10 shadow-sm
+             transition hover:-translate-y-1 hover:border-accent2/60 hover:shadow-md
+             dark:border-dark2 dark:bg-dark1 dark:hover:border-accent2/70
+             md:px-10 md:py-14">
   {/* Soft accent glow */}
   <div className="pointer-events-none absolute -top-6 right-10 h-20 w-20 rounded-full bg-accent1/12 blur-2xl dark:bg-accent5/16" />
 

@@ -48,8 +48,13 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-light2 bg-light1 px-6 py-10 shadow-sm dark:border-dark2 dark:bg-dark1 md:px-10 md:py-14">
-      {/* Background: glow + subtle grid */}
+    <section
+  className="group relative overflow-hidden rounded-2xl border border-light2 bg-light1 px-6 py-10 shadow-sm
+             transition hover:-translate-y-1 hover:border-accent2/60 hover:shadow-md
+             dark:border-dark2 dark:bg-dark1 dark:hover:border-accent2/70
+             md:px-10 md:py-14"
+>
+{/* Background: glow + subtle grid */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-accent5/12 blur-3xl dark:bg-accent1/16" />
         <div className="absolute -bottom-28 right-0 h-80 w-80 rounded-full bg-accent2/12 blur-3xl dark:bg-accent5/16" />
@@ -80,17 +85,20 @@ export default function HeroSection() {
 
           {/* Proof chips */}
           <div className="flex flex-wrap gap-3 text-[12px] text-dark1/70 dark:text-light1/60">
-            <span className="rounded-full border border-light2 bg-light1/70 px-3 py-1 shadow-sm dark:border-dark2 dark:bg-dark1/50">
+            <span className="hover:-translate-y-1 hover:border-accent2/60 hover:shadow-md
+             dark:border-dark2 dark:bg-dark1 rounded-full border border-light2 bg-light1/70 px-3 py-1 shadow-sm dark:border-dark2 dark:bg-dark1/50">
               Python + SQL pipelines
             </span>
-            <span className="rounded-full border border-light2 bg-light1/70 px-3 py-1 shadow-sm dark:border-dark2 dark:bg-dark1/50">
+            <span className="hover:-translate-y-1 hover:border-accent2/60 hover:shadow-md
+             dark:border-dark2 dark:bg-dark1 rounded-full border border-light2 bg-light1/70 px-3 py-1 shadow-sm dark:border-dark2 dark:bg-dark1/50">
               Power BI dashboards for decisions
             </span>
             <a
               href="https://github.com/DaryllBanal1030"
               target="_blank"
               rel="noreferrer"
-              className="rounded-full border border-light2 bg-light1/70 px-3 py-1 shadow-sm transition hover:bg-light2 dark:border-dark2 dark:bg-dark1/50 dark:hover:bg-dark2"
+              className="hover:-translate-y-1 hover:border-accent2/60 hover:shadow-md
+             dark:border-dark2 dark:bg-dark1 rounded-full border border-light2 bg-light1/70 px-3 py-1 shadow-sm transition hover:bg-light2 dark:border-dark2 dark:bg-dark1/50 dark:hover:bg-dark2"
             >
               Daily GitHub commits ↗
             </a>
