@@ -3,16 +3,70 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+const NAV_ITEMS = [
+  { id: "about", label: "About" },
+  { id: "experience", label: "Experience" },
+  { id: "skills", label: "Skills" },
+  { id: "projects", label: "Projects" },
+  { id: "contact", label: "Contact" },
+] as const;
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => setMounted(true), []);
 
   const scrollToId = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Scrollspy via IntersectionObserver
+  useEffect(() => {
+    const sections = NAV_ITEMS
+      .map((item) => document.getElementById(item.id))
+      .filter(Boolean) as HTMLElement[];
+
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Take the entries that are intersecting
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          // Prefer the one with the highest intersection ratio
+          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0))[0];
+
+        if (visible?.target?.id) {
+          setActiveId(visible.target.id);
+        }
+      },
+      {
+        // Adjust for sticky navbar height (roughly)
+        root: null,
+        threshold: [0.2, 0.35, 0.5, 0.65],
+        rootMargin: "-30% 0px -60% 0px",
+      }
+    );
+
+    sections.forEach((s) => observer.observe(s));
+
+    return () => observer.disconnect();
+  }, []);
+
+  const linkClass = (id: string) => {
+    const isActive = activeId === id;
+
+    return [
+      "rounded-md px-2 py-1 text-dark2 transition dark:text-light1",
+      "hover:bg-light2 dark:hover:bg-dark2",
+      isActive
+        ? "bg-light2 font-semibold text-accent5 dark:bg-dark2 dark:text-accent1"
+        : "",
+    ].join(" ");
   };
 
   return (
@@ -42,41 +96,17 @@ export default function Navbar() {
         {/* RIGHT: Links + Toggle */}
         <div className="flex items-center gap-3">
           <div className="hidden items-center gap-2 text-sm md:flex">
-            <button
-              type="button"
-              onClick={() => scrollToId("about")}
-              className="rounded-md px-2 py-1 text-dark2 transition hover:bg-light2 dark:text-light1 dark:hover:bg-dark2"
-            >
-              About
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToId("experience")}
-              className="rounded-md px-2 py-1 text-dark2 transition hover:bg-light2 dark:text-light1 dark:hover:bg-dark2"
-            >
-              Experience
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToId("skills")}
-              className="rounded-md px-2 py-1 text-dark2 transition hover:bg-light2 dark:text-light1 dark:hover:bg-dark2"
-            >
-              Skills
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToId("projects")}
-              className="rounded-md px-2 py-1 text-dark2 transition hover:bg-light2 dark:text-light1 dark:hover:bg-dark2"
-            >
-              Projects
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToId("contact")}
-              className="rounded-md px-2 py-1 text-dark2 transition hover:bg-light2 dark:text-light1 dark:hover:bg-dark2"
-            >
-              Contact
-            </button>
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => scrollToId(item.id)}
+                className={linkClass(item.id)}
+                aria-current={activeId === item.id ? "page" : undefined}
+              >
+                {item.label}
+              </button>
+            ))}
           </div>
 
           {mounted && (
